@@ -7,11 +7,11 @@ class OneToHundredStream extends Readable {
     const i = this.index++;
 
     setTimeout(() => {
-      if (i > 100) {
+      if (i > 5) {
         console.log('Stream encerrado');
         this.push(null);
       } else {
-        console.log('Enviando:', i);
+        //console.log('Enviando:', i);
         this.push(Buffer.from(String(i)));
       }
     }, 1000); // 1 segundo de delay
@@ -39,9 +39,8 @@ fetch('http://localhost:3334', {
   method: 'POST',
   body: new OneToHundredStream(),
   duplex: 'half', // MUITO IMPORTANTE
+}).then(response => {
+    return response.text()
+}).then(data => {
+    console.log(data)
 })
-  .then((res) => res.text())
-  .then((data) => {
-    console.log('✅ Resposta final do servidor:', data);
-  })
-  .catch(console.error);

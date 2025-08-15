@@ -18,14 +18,29 @@ class InvertNumberStream extends Transform {
 // res => Writable Stream
 // req e res são streams, ou seja, eles podem ser lidos e escritos em partes
 
-const server = http.createServer((req, res) => {
+const server = http.createServer(async (req, res) => {
   req.on('data', (chunk) => {
-    console.log('Chegou do cliente:', chunk.toString());
   });
+
+  const buffers = []
+
+  for await (const chunk of req) {
+    buffers.push(chunk);
+  }
+
+  const fullStreamContent = Buffer.concat(buffers).toString();
   
-  return req
+  console.log(fullStreamContent);
+
+  return res.end(fullStreamContent)
+
+/*   
+    //Old
+    return req
     .pipe(new InvertNumberStream())
     .pipe(res);
+*/
+
   // O pipe conecta o Readable Stream (req) ao Writable Stream (res)
   // Isso significa que os dados lidos do req serão escritos no res
   // O res é o que será enviado como resposta para o cliente
