@@ -12,7 +12,12 @@ export const routes = [
     handler: (req, res) => {
       //console.log('Query: ',req.query)
 
-      const users = database.select('users');
+      const { search } = req.query
+
+      const users = database.select('users', search ? {
+        name: search,
+        email: search
+      } : null);
 
       return res.end(JSON.stringify(users));
     }

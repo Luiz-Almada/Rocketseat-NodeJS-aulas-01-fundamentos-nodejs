@@ -20,8 +20,23 @@ export class Database {
     fs.writeFile(databasePath, JSON.stringify(this.#database))
   }
 
-  select(table) {
-    const data = this.#database[table] ?? []
+  // { name: 'Balbino', email: 'Balbino'}
+  // Object.entries(search) converte em array
+  // { name: 'Balbino', email: 'Balbino'} => [['name', 'Balbino'], ['email', 'Balbino']]
+  // some() retorna true se ao menos um dos elementos do array atender a condição
+  // includes() retorna true se o valor for encontrado na string
+
+  select(table, search) {
+    //const data = this.#database[table] ?? []
+    let data = this.#database[table] ?? []
+
+    if (search) {
+      data = data.filter(row => {
+        return Object.entries(search).some(([key, value]) => {
+          return row[key].toLowerCase().includes(value.toLowerCase())
+        })
+      })
+    }
 
     return data
   }
